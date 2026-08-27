@@ -71,35 +71,35 @@
   <title>Gitea Mark Files Read</title>
 </svelte:head>
 
-<div class="mx-auto max-w-2xl p-6">
-  <h1 class="text-2xl font-semibold tracking-tight">Gitea Mark Files Read</h1>
-  <p class="mt-2 text-sm text-muted-foreground">
+<div class="mx-auto w-full max-w-md p-3 sm:p-6">
+  <h1 class="text-base font-semibold tracking-tight sm:text-2xl">Gitea Mark Files Read</h1>
+  <p class="mt-1 text-xs text-muted-foreground sm:mt-2 sm:text-sm">
     Configure the Gitea hosts and file paths that the PR action may update.
   </p>
 
-  <form class="mt-8 space-y-6" onsubmit={submit}>
-    <label class="block space-y-2">
-      <span class="text-sm font-medium">Gitea origins</span>
+  <form class="mt-4 space-y-3 sm:mt-8 sm:space-y-6" onsubmit={submit}>
+    <label class="block space-y-1 sm:space-y-2">
+      <span class="text-xs font-medium sm:text-sm">Gitea origins</span>
       <textarea
-        class="min-h-24 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        class="min-h-16 w-full rounded-md border border-input bg-background px-2 py-1.5 text-xs shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-ring sm:min-h-24 sm:px-3 sm:py-2 sm:text-sm"
         placeholder="https://git.example.com"
         bind:value={hostsText}
         aria-describedby="hosts-help"
       ></textarea>
-      <span id="hosts-help" class="text-xs text-muted-foreground">
+      <span id="hosts-help" class="text-[11px] text-muted-foreground sm:text-xs">
         One origin per line. The extension will request access only for these hosts.
       </span>
     </label>
 
-    <label class="block space-y-2">
-      <span class="text-sm font-medium">Full file path regex</span>
+    <label class="block space-y-1 sm:space-y-2">
+      <span class="text-xs font-medium sm:text-sm">Full file path regex</span>
       <input
-        class="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        class="h-8 w-full rounded-md border border-input bg-background px-2 py-1.5 text-xs shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-10 sm:px-3 sm:py-2 sm:text-sm"
         placeholder="^src/.*\\.ts$"
         bind:value={pattern}
         aria-describedby="pattern-help"
       />
-      <span id="pattern-help" class="text-xs text-muted-foreground">
+      <span id="pattern-help" class="text-[11px] text-muted-foreground sm:text-xs">
         The expression is matched against the complete repository-relative path.
       </span>
     </label>
@@ -110,7 +110,7 @@
       <p class="text-sm text-green-700" role="status">{message}</p>
     {/if}
 
-    <Button type="submit" disabled={saving}>
+    <Button type="submit" size="sm" disabled={saving}>
       {saving ? "Saving..." : "Save settings"}
     </Button>
   </form>

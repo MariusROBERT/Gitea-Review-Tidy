@@ -36,9 +36,6 @@ async function syncContentScripts() {
 extensionApi.runtime.onInstalled.addListener(() => void syncContentScripts());
 extensionApi.runtime.onStartup.addListener(() => void syncContentScripts());
 extensionApi.storage.onChanged.addListener(() => void syncContentScripts());
-extensionApi.action.onClicked.addListener(() =>
-  void extensionApi.tabs.create({ url: extensionApi.runtime.getURL("index.html") }),
-);
 extensionApi.runtime.onMessage.addListener((message) => {
   if (message?.type === "sync-content-scripts") void syncContentScripts();
 });
