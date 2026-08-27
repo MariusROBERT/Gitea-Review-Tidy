@@ -4,8 +4,24 @@
   "version": "0.1.0",
   "description": "Mark matching Gitea pull request files as viewed.",
   "permissions": [
-    "storage"
+    "storage",
+    "scripting"
   ],
+  "optional_host_permissions": [
+    "*://*/*"
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "gitea-mark-files-read@example.com",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  },
+  "background": {
+    "scripts": ["background.js"],
+    "service_worker": "background.js"
+  },
   "options_page": "index.html",
   "action": {
     "default_title": "Gitea Mark Files Read settings"
