@@ -1,0 +1,28 @@
+{
+  "name": "gitea-mark-files-read",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "vite build && vite build --config vite.background.config.ts && vite build --config vite.content.config.ts",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "package:firefox": "npm run build && npx --yes web-ext build --source-dir dist --artifacts-dir artifacts --filename gitea_mark_files_read-0.1.0.xpi --overwrite-dest"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^7.3.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/chrome": "^0.0.326",
+    "bits-ui": "^2.18.1",
+    "shadcn-svelte": "^1.5.0",
+    "svelte": "^5.56.9",
+    "svelte-check": "^4.3.1",
+    "tailwind-merge": "^3.6.0",
+    "tailwind-variants": "^3.3.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.2",
+    "vite": "^8.2.1"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1"
+  }
+}

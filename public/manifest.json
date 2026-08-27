@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Gitea Mark Files Read",
+  "version": "0.1.0",
+  "description": "Mark matching Gitea pull request files as viewed.",
+  "permissions": [
+    "storage"
+  ],
+  "options_page": "index.html",
+  "action": {
+    "default_title": "Gitea Mark Files Read settings"
+  }
+}
