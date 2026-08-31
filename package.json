@@ -9,6 +9,7 @@
     "package:firefox": "npm run build && npx --yes web-ext build --source-dir dist --artifacts-dir artifacts --filename gitea_mark_files_read-0.1.0.xpi --overwrite-dest"
   },
   "devDependencies": {
+    "@internationalized/date": "^3.12.3",
     "@sveltejs/vite-plugin-svelte": "^7.3.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/chrome": "^0.0.326",

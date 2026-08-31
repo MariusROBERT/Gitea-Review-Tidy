@@ -37,3 +37,22 @@ export function processMatchingFiles(pattern: RegExp): ProcessResult {
 
   return result;
 }
+
+export function setMatchingFilesHidden(pattern: RegExp, hidden: boolean): void {
+  const matchingIds = new Set<string>();
+  const boxes = document.querySelectorAll<HTMLElement>(
+    "#diff-file-boxes .diff-file-box[data-new-filename]",
+  );
+
+  for (const box of boxes) {
+    const path = box.getAttribute("data-new-filename")?.trim() || box.getAttribute("data-old-filename")?.trim() || "";
+    if (!pattern.test(path)) continue;
+
+    box.hidden = hidden;
+    if (box.id) matchingIds.add(`#${box.id}`);
+  }
+
+  for (const file of document.querySelectorAll<HTMLAnchorElement>("#diff-file-tree a.item-file")) {
+    if (matchingIds.has(file.getAttribute("href") ?? "")) file.hidden = hidden;
+  }
+}
