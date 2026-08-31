@@ -1,0 +1,102 @@
+name: Release browser extensions
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check source
+        run: npm run check
+
+      - name: Build extension
+        run: npm run build
+
+      - name: Read release version
+        id: version
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Tag must have the form v1.2.3" >&2
+            exit 1
+          fi
+          echo "value=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Set built manifest version
+        env:
+          VERSION: ${{ steps.version.outputs.value }}
+        run: |
+          VERSION="$VERSION" node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from "node:fs";
+
+          const path = "dist/manifest.json";
+          const manifest = JSON.parse(readFileSync(path, "utf8"));
+          manifest.version = process.env.VERSION;
+          writeFileSync(path, `${JSON.stringify(manifest, null, 2)}\n`);
+          NODE
+
+      - name: Lint extension package
+        run: npx --yes web-ext@10.6.0 lint --source-dir dist
+
+      - name: Prepare release directory
+        run: mkdir -p release-assets firefox-artifacts
+
+      - name: Package Chrome extension
+        env:
+          VERSION: ${{ steps.version.outputs.value }}
+        run: |
+          (cd dist && zip -qr "../release-assets/gitea-mark-files-read-${VERSION}-chrome.zip" .)
+
+      - name: Sign Firefox extension
+        env:
+          VERSION: ${{ steps.version.outputs.value }}
+          AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
+          AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+        run: |
+          npx --yes web-ext@10.6.0 sign \
+            --source-dir dist \
+            --artifacts-dir firefox-artifacts \
+            --channel unlisted \
+            --api-key "$AMO_JWT_ISSUER" \
+            --api-secret "$AMO_JWT_SECRET" \
+            --no-input
+
+          signed_xpis=(firefox-artifacts/*.xpi)
+          if [[ ! -f "${signed_xpis[0]}" || "${#signed_xpis[@]}" -ne 1 ]]; then
+            echo "Expected exactly one signed Firefox XPI" >&2
+            exit 1
+          fi
+          mv "${signed_xpis[0]}" "release-assets/gitea-mark-files-read-${VERSION}-firefox.xpi"
+
+      - name: Generate checksums
+        run: sha256sum release-assets/* > release-assets/SHA256SUMS.txt
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.value }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            release-assets/* \
+            --title "Gitea Mark Files Read v${VERSION}" \
+            --generate-notes
