@@ -95,7 +95,7 @@
       <span class="text-xs font-medium sm:text-sm">Full file path regex</span>
       <input
         class="h-8 w-full rounded-md border border-input bg-background px-2 py-1.5 text-xs shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-10 sm:px-3 sm:py-2 sm:text-sm"
-        placeholder="^src/.*\\.ts$"
+        placeholder="^(OKF|bruno)/.*"
         bind:value={pattern}
         aria-describedby="pattern-help"
       />
