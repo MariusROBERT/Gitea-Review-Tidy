@@ -5,7 +5,7 @@
   import { validPattern } from "$lib/settings";
   import { processMatchingFiles, setMatchingFilesHidden } from "./process";
 
-  let { pattern }: { pattern: string } = $props();
+  let { pattern, canMarkFiles }: { pattern: string; canMarkFiles: boolean } = $props();
 
   let running = $state(false);
   let message = $state("");
@@ -31,7 +31,7 @@
   });
 
   function run() {
-    if (!valid || running) return;
+    if (!canMarkFiles || !valid || running) return;
 
     running = true;
     message = "";
@@ -46,7 +46,7 @@
   {#if message}
     <span class="text-xs" role="status">{message}</span>
   {/if}
-  <Button size="sm" disabled={!valid || running} onclick={run}>
+  <Button size="sm" disabled={!canMarkFiles || !valid || running} onclick={run}>
     {running ? "Marking..." : "Mark matching files read"}
   </Button>
   <label class="inline-flex cursor-pointer items-center gap-1.5 text-xs" for="hide-matching-files">
