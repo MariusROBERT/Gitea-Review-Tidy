@@ -3,7 +3,8 @@ import App from "./App.svelte";
 import { getSettings, normalizeOrigin } from "$lib/settings";
 import contentStyles from "./content.css?inline";
 
-const pullFilesPath = /\/pulls\/\d+\/files\/?$/;
+const fullPullFilesPath = /\/pulls\/\d+\/files\/?$/;
+const pullFilesPath = /\/pulls\/\d+\/files(?:\/[^/]+\.\.[^/]+)?\/?$/;
 
 async function start() {
   if (!pullFilesPath.test(location.pathname)) return;
@@ -28,7 +29,7 @@ async function start() {
 
   mount(App, {
     target: mountTarget,
-    props: { pattern: settings.pattern },
+    props: { pattern: settings.pattern, canMarkFiles: fullPullFilesPath.test(location.pathname) },
   });
 }
 
